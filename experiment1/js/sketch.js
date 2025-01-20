@@ -65,11 +65,11 @@ function draw() {
   fill(360 - (mouseY / 2), 100, 100);
   for (let i = 0; i <= width + 50; i += 50) {
     for (let j = 0; j <= height + 50; j += 50) {
-      let diameter = dist(mouseX, mouseY, i, j);
+      let distance = dist(mouseX, mouseY, i, j);
       push();
       translate(i, j);
       rotate(atan2(mouseY - j, mouseX - i) + 60 * (PI / 180));
-      rect(0, 0, diameter * 0.2, diameter * 0.2);
+      rect(0, 0, distance * 0.2, distance * 0.2);
       pop();
     }
   }
@@ -78,31 +78,17 @@ function draw() {
   fill((mouseY / 2), 100, 100);
   for (let i = 0; i <= width + 40; i += 40) {
     for (let j = 0; j <= height + 40; j += 40) {
-      let diameter = dist(mouseX, mouseY, i, j);
+      let distance = dist(mouseX, mouseY, i, j);
       push();
       translate(i, j);
-      if (diameter > 300)
+      if (distance > 300)
         rect(0, 0, 30, 30);
       pop();
     }
   }
 
-  // fill('black');
-  // ellipse(mouseX, mouseY, 100, 400);
-  // Set up rotation for the rectangle
-  // push(); // Save the current drawing context
-  // translate(centerHorz, centerVert); // Move the origin to the rectangle's center
-  // rotate(frameCount / 100.0); // Rotate by frameCount to animate the rotation
-  // fill(234, 31, 81);
-  // noStroke();
-  // rect(-125, -125, 250, 250); // Draw the rectangle centered on the new origin
-  // pop(); // Restore the original drawing context
-
-  // The text is not affected by the translate and rotate
-  // fill(255);
-  // textStyle(BOLD);
-  // textSize(140);
-  // text("p5*", centerHorz - 105, centerVert + 40);
+  fill('black');
+  ellipse(mouseX, mouseY, 100, 400);
 }
 
 // mousePressed() function is called once after every time a mouse button is pressed
