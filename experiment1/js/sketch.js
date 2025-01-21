@@ -55,25 +55,27 @@ function setup() {
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
   clear();
+  // Credit to https://editor.p5js.org/generative-design/sketches/P_1_0_01
   background(mouseY / 2, 100, 100);
-  // call a method on the instance
-  myInstance.myMethod();
-
-  rectMode(CENTER);
-
-  noStroke();
   fill(360 - (mouseY / 2), 100, 100);
+
+  // Draws the first layer of squares
+  rectMode(CENTER);
+  noStroke();
+  // Credit to https://editor.p5js.org/generative-design/sketches/P_2_1_2_03
   for (let i = 0; i <= width + 50; i += 50) {
     for (let j = 0; j <= height + 50; j += 50) {
       let distance = dist(mouseX, mouseY, i, j);
       push();
       translate(i, j);
+      // Credit to https://editor.p5js.org/generative-design/sketches/P_2_1_1_04
       rotate(atan2(mouseY - j, mouseX - i) + 60 * (PI / 180));
       rect(0, 0, distance * 0.2, distance * 0.2);
       pop();
     }
   }
 
+  // Draws the second layer of squares and the eye's perimeter
   stroke('black');
   fill((mouseY / 2), 100, 100);
   for (let i = 0; i <= width + 40; i += 40) {
@@ -87,6 +89,7 @@ function draw() {
     }
   }
 
+  // Draws the pupil of the eye
   fill('black');
   ellipse(mouseX, mouseY, 100, 400);
 }
