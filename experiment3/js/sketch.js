@@ -26,6 +26,15 @@ class MyClass {
     }
 }
 
+let camera;
+let scaleToCam;
+const camWidth = 320;
+const camHeight = 240;
+
+const colors = ["red", "orange", "yellow", "lightgreen", "lightblue", "blue", "purple"];
+
+let osc, playing, freq = 0, amp;
+
 function resizeScreen() {
   centerHorz = canvasContainer.width() / 2; // Adjusted for drawing logic
   centerVert = canvasContainer.height() / 2; // Adjusted for drawing logic
@@ -49,31 +58,69 @@ function setup() {
     resizeScreen();
   });
   resizeScreen();
+
+  if (height < width)
+    scaleToCam = width / camWidth;
+  else
+    scaleToCam = height / camHeight;
+
+  noStroke();
+  camera = createCapture(VIDEO);
+  camera.size(camWidth, camHeight);
+  camera.hide();
+
+  osc = new p5.Oscillator("sine");
 }
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
+  clear();
   background(220);    
   // call a method on the instance
   myInstance.myMethod();
 
-  // Set up rotation for the rectangle
-  push(); // Save the current drawing context
-  translate(centerHorz, centerVert); // Move the origin to the rectangle's center
-  rotate(frameCount / 100.0); // Rotate by frameCount to animate the rotation
-  fill(234, 31, 81);
-  noStroke();
-  rect(-125, -125, 250, 250); // Draw the rectangle centered on the new origin
-  pop(); // Restore the original drawing context
+  camera.loadPixels();
+  scale(scaleToCam);
 
-  // The text is not affected by the translate and rotate
-  fill(255);
-  textStyle(BOLD);
-  textSize(140);
-  text("p5*", centerHorz - 105, centerVert + 40);
+  let scaledX = floor(map(mouseX, 0, width, 0, camWidth));
+  let scaledY = floor(map(mouseY, 0, height, 0, camHeight));
+
+  for (let y = 0; y < (camHeight); y += 3) {
+		for (let x = 0; x < camWidth; x += 3) {
+      let distance = dist(scaledX, scaledY, x, y);
+			let colorIndex = getPixel(x, y);
+      if (distance < 30)
+        colorIndex = (colors.length - 1) - colorIndex;
+      fill(colors[colorIndex]);
+
+      rect(x, y, 3, 3);
+		}
+	}
+  
+  let freqIndex = getPixel(scaledX, scaledY);
+  freq = (freqIndex + 2) * 100;
+
+  if (playing) {
+    osc.freq(freq, 0.1);
+    osc.amp(0.5, 0.1);
+  }
 }
 
-// mousePressed() function is called once after every time a mouse button is pressed
 function mousePressed() {
-    // code to run when mouse is pressed
+  osc.start();
+  playing = true;
+}
+
+function mouseReleased() {
+  osc.amp(0, 1);
+  playing = false;
+}
+
+function getPixel(x, y) {
+  const i = ((y * camWidth) + x) * 4;
+	const r = camera.pixels[i];
+	const g = camera.pixels[i + 1];
+	const b = camera.pixels[i + 2];
+
+  return index = floor(((r + g + b) / (255 * 3)) * (colors.length - 1));
 }
